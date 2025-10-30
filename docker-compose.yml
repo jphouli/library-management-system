@@ -1,0 +1,114 @@
+networks:
+  library:
+    driver: bridge
+
+services:
+  user-service:
+    build: ./user-service
+    container_name: user-service-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${USER_SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${USER_SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${USER_SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    depends_on:
+      user-db:
+        condition: service_healthy
+    networks:
+      - library
+    restart: always
+
+  catalog-service:
+    build: ./catalog-service
+    container_name: catalog-service-app
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${CATALOG_SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${CATALOG_SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${CATALOG_SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    depends_on:
+      catalog-db:
+        condition: service_healthy
+    networks:
+      - library
+    restart: always
+
+  loan-service:
+    build: ./loan-service
+    container_name: loan-service-app
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${LOAN_SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${LOAN_SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${LOAN_SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    depends_on:
+      loan-db:
+        condition: service_healthy
+    networks:
+      - library
+    restart: always
+
+  user-db:
+    image: postgres:16-alpine
+    container_name: user-service-db
+    environment:
+      POSTGRES_DB: ${USER_POSTGRES_DB}
+      POSTGRES_USER: ${USER_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${USER_POSTGRES_PASSWORD}
+    volumes:
+      - user_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${USER_POSTGRES_USER} -d ${USER_POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    networks:
+      - library
+
+  catalog-db:
+    image: postgres:16-alpine
+    container_name: catalog-service-db
+    environment:
+      POSTGRES_DB: ${CATALOG_POSTGRES_DB}
+      POSTGRES_USER: ${CATALOG_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${CATALOG_POSTGRES_PASSWORD}
+    volumes:
+      - catalog_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${CATALOG_POSTGRES_USER} -d ${CATALOG_POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    networks:
+      - library
+
+  loan-db:
+    image: postgres:16-alpine
+    container_name: loan-service-db
+    environment:
+      POSTGRES_DB: ${LOAN_POSTGRES_DB}
+      POSTGRES_USER: ${LOAN_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${LOAN_POSTGRES_PASSWORD}
+    volumes:
+      - loan_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${LOAN_POSTGRES_USER} -d ${LOAN_POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    networks:
+      - library
+
+volumes:
+  user_db_data:
+  catalog_db_data:
+  loan_db_data:
