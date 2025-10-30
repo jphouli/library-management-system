@@ -9,15 +9,15 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column
+    @Column(nullable = false)
     private String title;
-    @Column
+    @Column(nullable = false)
     private String author;
-    @Column
+    @Column(nullable = false)
     private String publisher;
-    @Column
+    @Column(nullable = false)
     private String genre;
-    @Column
+    @Column(unique = true, nullable = false)
     private String isbn;
 
     public UUID getId() {

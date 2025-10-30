@@ -34,8 +34,8 @@ public class CatalogController {
     }
 
     @GetMapping(params = {"title", "!author"})
-    public ResponseEntity<BookResponseDTO> getBookByTitle(@RequestParam(name="title") String title) {
-        return ResponseEntity.ok(catalogService.getBookByTitle(title));
+    public ResponseEntity<List<BookResponseDTO>> getBooksByTitle(@RequestParam(name="title") String title) {
+        return ResponseEntity.ok(catalogService.getBooksByTitle(title));
     }
 
     @PostMapping
@@ -51,12 +51,6 @@ public class CatalogController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBookById(@PathVariable UUID id) {
         catalogService.deleteBookById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping
-    public ResponseEntity<Void> deleteBookByTitle(@RequestParam(name="title") String title) {
-        catalogService.deleteBookByTitle(title);
         return ResponseEntity.noContent().build();
     }
 }

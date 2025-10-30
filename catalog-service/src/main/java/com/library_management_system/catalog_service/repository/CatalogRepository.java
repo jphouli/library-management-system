@@ -8,8 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface CatalogRepository extends JpaRepository<Book, UUID> {
-    Book findByTitleContainingIgnoreCase(String title);
+    List<Book> findByTitleContainingIgnoreCase(String title);
     List<Book> findByAuthorContainingIgnoreCase(String author);
-    void deleteByTitle(String title);
     void deleteById(UUID id);
 }

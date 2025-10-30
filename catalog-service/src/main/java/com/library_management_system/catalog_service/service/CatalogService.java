@@ -24,8 +24,8 @@ public class CatalogService {
         return catalogRepository.findAll().stream().map(bookMapper::bookToResponse).toList();
     }
 
-    public BookResponseDTO getBookByTitle(String title) {
-        return bookMapper.bookToResponse(catalogRepository.findByTitleContainingIgnoreCase(title));
+    public List<BookResponseDTO> getBooksByTitle(String title) {
+        return catalogRepository.findByTitleContainingIgnoreCase(title).stream().map(bookMapper::bookToResponse).toList();
     }
 
     public List<BookResponseDTO> getAllBooksByAuthor(String author) {
@@ -51,9 +51,5 @@ public class CatalogService {
 
     public void deleteBookById(UUID id) {
         catalogRepository.deleteById(id);
-    }
-
-    public void deleteBookByTitle(String title) {
-        catalogRepository.deleteByTitle(title);
     }
 }
