@@ -5,11 +5,9 @@ import com.library_management_system.user_service.dto.UserResponseDTO;
 import com.library_management_system.user_service.model.User;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 public class UserMapper {
-    public UserResponseDTO userToResponseDTO(User user) {
+    public UserResponseDTO userToResponse(User user) {
         UserResponseDTO userResponseDTO = new UserResponseDTO();
 
         userResponseDTO.setId(user.getId());

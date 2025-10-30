@@ -24,34 +24,33 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO addUser(UserRequestDTO userRequestDTO) {
-        User user = userMapper.userRequestToUser(userRequestDTO);
-        return userMapper.userToResponseDTO(userRepository.save(user));
+        return userMapper.userToResponse(userRepository.save(userMapper.userRequestToUser(userRequestDTO)));
     }
 
     @Transactional(readOnly = true)
     public List<UserResponseDTO> getUsers() {
-        return userRepository.findAll().stream().map(userMapper::userToResponseDTO).toList();
+        return userRepository.findAll().stream().map(userMapper::userToResponse).toList();
     }
 
     @Transactional(readOnly = true)
     public UserResponseDTO getUserById(UUID id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UserNotFoundException("User not found with ID: " + id));
-        return userMapper.userToResponseDTO(user);
+        return userMapper.userToResponse(user);
     }
 
     @Transactional(readOnly = true)
     public List<UserResponseDTO> getUsersByNameContainingIgnoreCase(String name) {
         return userRepository.findByNameContainingIgnoreCase(name)
-                .stream().map(userMapper::userToResponseDTO).toList();
+                .stream().map(userMapper::userToResponse).toList();
     }
 
     public UserResponseDTO updateUser(UUID id, UserRequestDTO user) {
         User existingUser = userRepository.findById(id).orElseThrow(
                 () -> new UserNotFoundException("User not found with ID: " + id));
-        User updatedUser = userMapper.userUpdateRequestToExistingUser(existingUser, user);
 
-        return userMapper.userToResponseDTO(userRepository.save(updatedUser));
+        return userMapper.userToResponse(
+                userRepository.save(userMapper.userUpdateRequestToExistingUser(existingUser, user)));
     }
 
     public void deleteUser(UUID id) {
