@@ -28,12 +28,12 @@ public class CatalogController {
         return ResponseEntity.ok(catalogService.getBookById(id));
     }
 
-    @GetMapping(params = "author")
+    @GetMapping(params = {"author", "!title"})
     public ResponseEntity<List<BookResponseDTO>> getBooksByAuthor(@RequestParam(name="author") String author) {
         return ResponseEntity.ok(catalogService.getAllBooksByAuthor(author));
     }
 
-    @GetMapping(params = "title")
+    @GetMapping(params = {"title", "!author"})
     public ResponseEntity<BookResponseDTO> getBookByTitle(@RequestParam(name="title") String title) {
         return ResponseEntity.ok(catalogService.getBookByTitle(title));
     }
