@@ -2,6 +2,7 @@ package com.library_management_system.user_service.service;
 
 import com.library_management_system.user_service.dto.UserRequestDTO;
 import com.library_management_system.user_service.dto.UserResponseDTO;
+import com.library_management_system.user_service.exception.UserAlreadyExistsException;
 import com.library_management_system.user_service.exception.UserNotFoundException;
 import com.library_management_system.user_service.mapper.UserMapper;
 import com.library_management_system.user_service.model.User;
@@ -24,6 +25,7 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO addUser(UserRequestDTO userRequestDTO) {
+        CheckIfEmailExists(userRequestDTO.getEmail());
         return userMapper.userToResponse(userRepository.save(userMapper.userRequestToUser(userRequestDTO)));
     }
 
@@ -48,12 +50,19 @@ public class UserService {
     public UserResponseDTO updateUser(UUID id, UserRequestDTO user) {
         User existingUser = userRepository.findById(id).orElseThrow(
                 () -> new UserNotFoundException("User not found with ID: " + id));
-
+        CheckIfEmailExists(existingUser.getEmail());
+        
         return userMapper.userToResponse(
                 userRepository.save(userMapper.userUpdateRequestToExistingUser(existingUser, user)));
     }
 
     public void deleteUser(UUID id) {
         userRepository.deleteById(id);
+    }
+
+    public void CheckIfEmailExists(String email) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new UserAlreadyExistsException("User input invalid.");
+        }
     }
 }
