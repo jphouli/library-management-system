@@ -28,9 +28,9 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @GetMapping(params = "case")
+    @GetMapping("/search/")
     public ResponseEntity<List<UserResponseDTO>> getUsersByNameContainingIgnoreCase(
-            @RequestParam(name="case", required = false) String name) {
+            @RequestParam(name="case") String name) {
         return ResponseEntity.ok(userService.getUsersByNameContainingIgnoreCase(name));
     }
 
